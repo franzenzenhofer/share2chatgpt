@@ -44,8 +44,9 @@
     fr: true
   };
 
-  /* Static SVG icon - OpenAI logo. Safe: constant string, no user input. */
-  var ICON_PATH = 'M22.282 9.821a5.985 5.985 0 00-.516-4.91 6.046 6.046 0 00-6.51-2.9A6.065 6.065 0 0011.69.258a6.043 6.043 0 00-5.775 4.257 5.984 5.984 0 00-4.005 2.903 6.05 6.05 0 00.75 7.09 5.985 5.985 0 00.516 4.911 6.05 6.05 0 006.51 2.9A6.065 6.065 0 0013.253 24a6.043 6.043 0 005.775-4.257 5.984 5.984 0 004.005-2.903 6.045 6.045 0 00-.75-7.019zM13.253 22.614a4.527 4.527 0 01-2.908-1.055l.144-.08 4.826-2.788a.785.785 0 00.397-.682v-6.81l2.04 1.178a.072.072 0 01.04.056v5.637a4.54 4.54 0 01-4.54 4.544zM3.604 18.466a4.52 4.52 0 01-.54-3.04l.144.085 4.826 2.787a.783.783 0 00.788 0l5.892-3.403v2.356a.072.072 0 01-.03.062l-4.878 2.817a4.54 4.54 0 01-6.202-1.664zM2.34 7.896a4.527 4.527 0 012.366-1.99v5.737a.782.782 0 00.393.676l5.892 3.403-2.04 1.178a.073.073 0 01-.068.006l-4.878-2.818A4.54 4.54 0 012.34 7.872zm17.077 3.972l-5.892-3.403 2.04-1.179a.073.073 0 01.068-.005l4.878 2.817a4.536 4.536 0 01-1.607 8.124v-5.678a.79.79 0 00-.397-.676zm2.03-3.065l-.144-.085-4.826-2.787a.783.783 0 00-.788 0L9.797 9.334V6.978a.072.072 0 01.03-.062l4.878-2.817a4.538 4.538 0 016.742 4.704zm-12.77 4.2l-2.04-1.178a.072.072 0 01-.04-.057V6.132a4.538 4.538 0 017.448-3.49l-.144.081-4.826 2.787a.785.785 0 00-.397.682zm1.108-2.393l2.626-1.516 2.626 1.516v3.032l-2.626 1.516-2.626-1.516z';
+  /* Official ChatGPT logo SVG path (CC0 public domain, Wikimedia Commons) */
+  var ICON_PATH = 'm297.06 130.97c7.26-21.79 4.76-45.66-6.85-65.48-17.46-30.4-52.56-46.04-86.84-38.68-15.25-17.18-37.16-26.95-60.13-26.81-35.04-.08-66.13 22.48-76.91 55.82-22.51 4.61-41.94 18.7-53.31 38.67-17.59 30.32-13.58 68.54 9.92 94.54-7.26 21.79-4.76 45.66 6.85 65.48 17.46 30.4 52.56 46.04 86.84 38.68 15.24 17.18 37.16 26.95 60.13 26.8 35.06.09 66.16-22.49 76.94-55.86 22.51-4.61 41.94-18.7 53.31-38.67 17.57-30.32 13.55-68.51-9.94-94.51zm-120.28 168.11c-14.03.02-27.62-4.89-38.39-13.88.49-.26 1.34-.73 1.89-1.07l63.72-36.8c3.26-1.85 5.26-5.32 5.24-9.07v-89.83l26.93 15.55c.29.14.48.42.52.74v74.39c-.04 33.08-26.83 59.9-59.91 59.97zm-128.84-55.03c-7.03-12.14-9.56-26.37-7.15-40.18.47.28 1.3.79 1.89 1.13l63.72 36.8c3.23 1.89 7.23 1.89 10.47 0l77.79-44.92v31.1c.02.32-.13.63-.38.83l-64.41 37.19c-28.69 16.52-65.33 6.7-81.92-21.95zm-16.77-139.09c7-12.16 18.05-21.46 31.21-26.29 0 .55-.03 1.52-.03 2.2v73.61c-.02 3.74 1.98 7.21 5.23 9.06l77.79 44.91-26.93 15.55c-.27.18-.61.21-.91.08l-64.42-37.22c-28.63-16.58-38.45-53.21-21.95-81.89zm221.26 51.49-77.79-44.92 26.93-15.54c.27-.18.61-.21.91-.08l64.42 37.19c28.68 16.57 38.51 53.26 21.94 81.94-7.01 12.14-18.05 21.44-31.2 26.28v-75.81c.03-3.74-1.96-7.2-5.2-9.06zm26.8-40.34c-.47-.29-1.3-.79-1.89-1.13l-63.72-36.8c-3.23-1.89-7.23-1.89-10.47 0l-77.79 44.92v-31.1c-.02-.32.13-.63.38-.83l64.41-37.16c28.69-16.55 65.37-6.7 81.91 22 6.99 12.12 9.52 26.31 7.15 40.1zm-168.51 55.43-26.94-15.55c-.29-.14-.48-.42-.52-.74v-74.39c.02-33.12 26.89-59.96 60.01-59.94 14.01 0 27.57 4.92 38.34 13.88-.49.26-1.33.73-1.89 1.07l-63.72 36.8c-3.26 1.85-5.26 5.31-5.24 9.06l-.04 89.79zm14.63-31.54 34.65-20.01 34.65 20v40.01l-34.65 20-34.65-20z';
+  var ICON_VIEWBOX = '0 0 320 320';
 
   var CSS = [
     '.s2c-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;max-width:100%;min-height:42px;padding:10px 18px;border:1px solid transparent;border-radius:999px;cursor:pointer;font-family:system-ui,-apple-system,sans-serif;font-weight:600;letter-spacing:-.01em;text-decoration:none;line-height:1.2;transition:transform .16s ease,box-shadow .22s ease,border-color .22s ease,background .22s ease,color .22s ease;box-sizing:border-box;-webkit-tap-highlight-color:transparent;overflow:hidden;isolation:isolate}',
@@ -141,6 +142,7 @@
       theme: normalizeChoice(source.theme, THEMES, 'light'),
       size: normalizeChoice(source.size, SIZES, 'md'),
       variant: normalizeChoice(source.variant, VARIANTS, 'button'),
+      icon: source.icon !== 'false' && source.icon !== false,
       label: toText(source.label),
       lang: lang
     };
@@ -148,7 +150,7 @@
 
   function createIcon() {
     var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('viewBox', ICON_VIEWBOX);
     svg.setAttribute('fill', 'currentColor');
     svg.setAttribute('aria-hidden', 'true');
     var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -201,6 +203,7 @@
       size:   el.getAttribute('data-size') || 'md',
       label:  el.getAttribute('data-label') || null,
       variant: el.getAttribute('data-variant') || 'button',
+      icon:   el.getAttribute('data-icon'),
       lang:   el.getAttribute('data-lang') || 'en'
     });
 
@@ -223,12 +226,14 @@
     link.setAttribute('aria-label', config.label);
 
     el.textContent = '';
-    link.appendChild(createIcon());
+    if (config.icon) link.appendChild(createIcon());
 
-    var span = document.createElement('span');
-    span.className = PREFIX + '-label';
-    span.textContent = config.label;
-    link.appendChild(span);
+    if (config.variant !== 'icon') {
+      var span = document.createElement('span');
+      span.className = PREFIX + '-label';
+      span.textContent = config.label;
+      link.appendChild(span);
+    }
 
     el.appendChild(link);
   }

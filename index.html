@@ -679,6 +679,13 @@
             </div>
           </fieldset>
           <fieldset class="field fieldset">
+            <legend>Icon</legend>
+            <div class="radio-group" data-field="icon" role="radiogroup" aria-label="Icon">
+              <button type="button" class="radio-pill active" data-value="true">With icon</button>
+              <button type="button" class="radio-pill" data-value="false">No icon</button>
+            </div>
+          </fieldset>
+          <fieldset class="field fieldset">
             <legend>Theme</legend>
             <div class="radio-group" data-field="theme" role="radiogroup" aria-label="Theme">
               <button type="button" class="radio-pill active" data-value="light">Light</button>
@@ -855,6 +862,7 @@ window.open(url, <span class="val">'_blank'</span>, <span class="val">'noopener,
     var theme = 'light';
     var size = 'md';
     var variant = 'button';
+    var icon = 'true';
 
     function escapeAttr(s) {
       return String(s)
@@ -964,7 +972,8 @@ window.open(url, <span class="val">'_blank'</span>, <span class="val">'noopener,
         temp: fields.temp.value,
         theme: theme,
         size: size,
-        variant: variant
+        variant: variant,
+        icon: icon
       };
     }
 
@@ -987,6 +996,7 @@ window.open(url, <span class="val">'_blank'</span>, <span class="val">'noopener,
       previewSlot.setAttribute('data-theme', c.theme);
       previewSlot.setAttribute('data-size', c.size);
       if (c.variant !== 'button') previewSlot.setAttribute('data-variant', c.variant); else previewSlot.removeAttribute('data-variant');
+      if (c.icon === 'false') previewSlot.setAttribute('data-icon', 'false'); else previewSlot.removeAttribute('data-icon');
       previewSlot.setAttribute('data-lang', c.lang);
       if (c.hints) previewSlot.setAttribute('data-hints', c.hints); else previewSlot.removeAttribute('data-hints');
       if (c.temp) previewSlot.setAttribute('data-temporary-chat', c.temp); else previewSlot.removeAttribute('data-temporary-chat');
@@ -1003,6 +1013,7 @@ window.open(url, <span class="val">'_blank'</span>, <span class="val">'noopener,
       if (c.prompt) attrs.push('data-prompt="' + escapeAttr(c.prompt) + '"');
       if (c.label)  attrs.push('data-label="' + escapeAttr(c.label) + '"');
       if (c.variant !== 'button') attrs.push('data-variant="' + c.variant + '"');
+      if (c.icon === 'false') attrs.push('data-icon="false"');
       if (c.theme !== 'light') attrs.push('data-theme="' + c.theme + '"');
       if (c.size !== 'md')     attrs.push('data-size="' + c.size + '"');
       if (c.lang !== 'en')     attrs.push('data-lang="' + c.lang + '"');
@@ -1029,7 +1040,7 @@ window.open(url, <span class="val">'_blank'</span>, <span class="val">'noopener,
     /* Radio pill groups */
     document.querySelectorAll('.radio-group').forEach(function(group) {
       var fieldName = group.getAttribute('data-field');
-      var currentVal = fieldName === 'theme' ? theme : fieldName === 'size' ? size : variant;
+      var currentVal = fieldName === 'theme' ? theme : fieldName === 'size' ? size : fieldName === 'variant' ? variant : icon;
       setPillState(group, currentVal);
 
       group.querySelectorAll('.radio-pill').forEach(function(pill) {
@@ -1037,6 +1048,7 @@ window.open(url, <span class="val">'_blank'</span>, <span class="val">'noopener,
           if (fieldName === 'theme') theme = pill.getAttribute('data-value');
           if (fieldName === 'size') size = pill.getAttribute('data-value');
           if (fieldName === 'variant') variant = pill.getAttribute('data-value');
+          if (fieldName === 'icon') icon = pill.getAttribute('data-value');
           setPillState(group, pill.getAttribute('data-value'));
           update();
         });
