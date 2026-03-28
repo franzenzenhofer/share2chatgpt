@@ -232,11 +232,8 @@
       transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
       box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
     }
-    .demo-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(16, 163, 127, 0.3);
-      box-shadow: 0 22px 44px rgba(0, 0, 0, 0.24);
-    }
+    .demo-card .s2c-btn { transform: none !important; }
+    .demo-card .s2c-btn:hover { transform: none !important; }
     .demo-card-label {
       font-family: var(--mono);
       font-size: 11px;
@@ -440,6 +437,8 @@
     .preview-box-light {
       background: linear-gradient(180deg, #ffffff, #f5f8f7);
     }
+    .preview-box .s2c-btn { transform: none !important; }
+    .preview-box .s2c-btn:hover { transform: none !important; }
     .output-block {
       flex: 1;
     }
