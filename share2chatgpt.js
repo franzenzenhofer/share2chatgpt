@@ -6,10 +6,10 @@
   var VERSION = '1.0.0';
 
   var PROMPTS = {
-    en: 'Read this page and summarize the key points: {url}',
-    de: 'Lies diese Seite und fasse die wichtigsten Punkte zusammen: {url}',
-    es: 'Lee esta pagina y resume los puntos clave: {url}',
-    fr: 'Lis cette page et resume les points cles: {url}'
+    en: 'Read this page and summarize the key points as bullet points: {url}',
+    de: 'Lies diese Seite und fasse die wichtigsten Punkte als Aufzaehlung zusammen: {url}',
+    es: 'Lee esta pagina y resume los puntos clave en viñetas: {url}',
+    fr: 'Lis cette page et resume les points cles sous forme de liste: {url}'
   };
 
   var LABELS = {

@@ -32,7 +32,7 @@ Everything is configurable via `data-*` attributes:
 
 ```html
 <div data-share2chatgpt
-     data-url="https://franzenzenhofer.github.io/share2chatgpt/"
+     data-url="https://share2chatgpt.franzai.com/"
      data-prompt="Summarize and list 3 key takeaways: {url}"
      data-theme="dark"
      data-size="lg"
@@ -47,7 +47,7 @@ Everything is configurable via `data-*` attributes:
 Link directly without embedding:
 
 ```
-https://franzenzenhofer.github.io/share2chatgpt/go/?url=https://example.com&lang=en
+https://share2chatgpt.franzai.com/go/?url=https://example.com&lang=en
 ```
 
 ## JavaScript API

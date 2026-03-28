@@ -8,15 +8,15 @@
   <meta property="og:title" content="share2chatgpt">
   <meta property="og:description" content="Add a Share to ChatGPT button to any website. Zero dependencies. One script tag.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://franzenzenhofer.github.io/share2chatgpt/">
-  <meta property="og:image" content="https://franzenzenhofer.github.io/share2chatgpt/og-image.png">
+  <meta property="og:url" content="https://share2chatgpt.franzai.com/">
+  <meta property="og:image" content="https://share2chatgpt.franzai.com/og-image.png">
   <meta property="og:image:width" content="2400">
   <meta property="og:image:height" content="1260">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="share2chatgpt — Share to ChatGPT button for any website">
   <meta name="twitter:description" content="Embeddable Share to ChatGPT button widget. Zero dependencies. Under 3KB. One script tag.">
-  <meta name="twitter:image" content="https://franzenzenhofer.github.io/share2chatgpt/og-image.png">
-  <link rel="canonical" href="https://franzenzenhofer.github.io/share2chatgpt/">
+  <meta name="twitter:image" content="https://share2chatgpt.franzai.com/og-image.png">
+  <link rel="canonical" href="https://share2chatgpt.franzai.com/">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
@@ -470,15 +470,15 @@
       <div class="demo-grid">
         <div class="demo-card">
           <div class="demo-card-label">Light</div>
-          <div data-share2chatgpt data-theme="light" data-size="md" data-url="https://franzenzenhofer.github.io/share2chatgpt/" data-title="share2chatgpt — Share to ChatGPT button for any website"></div>
+          <div data-share2chatgpt data-theme="light" data-size="md" data-url="https://share2chatgpt.franzai.com/" data-title="share2chatgpt — Share to ChatGPT button for any website"></div>
         </div>
         <div class="demo-card demo-card-dark">
           <div class="demo-card-label">Dark</div>
-          <div data-share2chatgpt data-theme="dark" data-size="md" data-url="https://franzenzenhofer.github.io/share2chatgpt/" data-title="share2chatgpt — Share to ChatGPT button for any website"></div>
+          <div data-share2chatgpt data-theme="dark" data-size="md" data-url="https://share2chatgpt.franzai.com/" data-title="share2chatgpt — Share to ChatGPT button for any website"></div>
         </div>
         <div class="demo-card">
           <div class="demo-card-label">Minimal</div>
-          <div data-share2chatgpt data-theme="minimal" data-size="md" data-url="https://franzenzenhofer.github.io/share2chatgpt/" data-title="share2chatgpt — Share to ChatGPT button for any website"></div>
+          <div data-share2chatgpt data-theme="minimal" data-size="md" data-url="https://share2chatgpt.franzai.com/" data-title="share2chatgpt — Share to ChatGPT button for any website"></div>
         </div>
       </div>
     </div>
@@ -533,7 +533,7 @@
           </div>
           <div class="field">
             <label for="cfg-prompt">Custom Prompt <span style="color:var(--gray-600);text-transform:none;letter-spacing:0;font-weight:400">&mdash; use {url}, {title}, {text} as placeholders</span></label>
-            <textarea id="cfg-prompt" placeholder="Default: Read this page and summarize the key points: {url}"></textarea>
+            <textarea id="cfg-prompt" placeholder="Default: Read this page and summarize the key points as bullet points: {url}"></textarea>
           </div>
           <div class="field">
             <label for="cfg-label">Button Label <span style="color:var(--gray-600);text-transform:none;letter-spacing:0;font-weight:400">&mdash; auto-translates per language</span></label>
@@ -669,7 +669,7 @@ window.open(url, <span class="val">'_blank'</span>);</pre>
       <div class="code-block">
         <div class="code-header"><span>URL</span><button class="copy-btn" data-copy="redirect-example">Copy</button></div>
         <div class="code-body">
-          <pre id="redirect-example" style="word-break: break-all; white-space: pre-wrap;">https://franzenzenhofer.github.io/share2chatgpt/go/?url=https%3A%2F%2Ffranzenzenhofer.github.io%2Fshare2chatgpt%2F&amp;lang=en</pre>
+          <pre id="redirect-example" style="word-break: break-all; white-space: pre-wrap;">https://share2chatgpt.franzai.com/go/?url=https%3A%2F%2Fshare2chatgpt.franzai.com%2F&amp;lang=en</pre>
         </div>
       </div>
     </div>
@@ -773,7 +773,7 @@ window.open(url, <span class="val">'_blank'</span>);</pre>
       if (c.lang !== 'en') params.set('lang', c.lang);
       if (c.hints) params.set('hints', c.hints);
       if (c.temp) params.set('temporary-chat', c.temp);
-      redirectOutput.textContent = 'https://franzenzenhofer.github.io/share2chatgpt/go/?' + params.toString();
+      redirectOutput.textContent = 'https://share2chatgpt.franzai.com/go/?' + params.toString();
     }
 
     /* Radio pill groups */
