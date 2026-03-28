@@ -31,6 +31,12 @@
     lg: true
   };
 
+  var VARIANTS = {
+    button: true,
+    icon: true,
+    link: true
+  };
+
   var LANGS = {
     en: true,
     de: true,
@@ -58,7 +64,18 @@
     '.s2c-dark{background:linear-gradient(180deg,#16312b,#10201d);color:#f8fafc;border-color:rgba(114,255,213,.18);box-shadow:0 16px 34px rgba(3,12,10,.35),inset 0 1px 0 rgba(255,255,255,.04)}',
     '.s2c-dark:hover{background:linear-gradient(180deg,#10a37f,#0d8b6d);color:#fff;border-color:rgba(185,255,236,.5);box-shadow:0 18px 36px rgba(16,163,127,.28)}',
     '.s2c-minimal{background:rgba(16,163,127,.08);color:#0f8a6b;border-color:rgba(16,163,127,.12);box-shadow:none;padding:8px 12px;min-height:34px}',
-    '.s2c-minimal:hover{background:rgba(16,163,127,.14);border-color:rgba(16,163,127,.26);box-shadow:0 8px 18px rgba(16,163,127,.12)}'
+    '.s2c-minimal:hover{background:rgba(16,163,127,.14);border-color:rgba(16,163,127,.26);box-shadow:0 8px 18px rgba(16,163,127,.12)}',
+    '.s2c-icon-only{padding:0;min-height:0;width:32px;height:32px;border-radius:50%;gap:0}',
+    '.s2c-icon-only.s2c-sm{width:26px;height:26px}',
+    '.s2c-icon-only.s2c-lg{width:40px;height:40px}',
+    '.s2c-icon-only .s2c-label{display:none}',
+    '.s2c-link-only{background:none;border:none;box-shadow:none;padding:0;min-height:0;border-radius:0;font-weight:500;color:#10a37f;gap:6px}',
+    '.s2c-link-only::before{display:none}',
+    '.s2c-link-only:hover{background:none;border:none;box-shadow:none;text-decoration:underline;transform:none}',
+    '.s2c-link-only:active{transform:none;opacity:.7}',
+    '.s2c-link-only svg{width:14px;height:14px}',
+    '.s2c-link-only.s2c-sm svg{width:12px;height:12px}.s2c-link-only.s2c-sm{font-size:12px}',
+    '.s2c-link-only.s2c-lg svg{width:16px;height:16px}.s2c-link-only.s2c-lg{font-size:16px}'
   ].join('\n');
 
   function toText(value) {
@@ -117,6 +134,7 @@
       temporaryChat: normalizeTemporaryChat(source.temporaryChat),
       theme: normalizeChoice(source.theme, THEMES, 'light'),
       size: normalizeChoice(source.size, SIZES, 'md'),
+      variant: normalizeChoice(source.variant, VARIANTS, 'button'),
       label: toText(source.label),
       lang: lang
     };
@@ -176,6 +194,7 @@
       theme:  el.getAttribute('data-theme') || 'light',
       size:   el.getAttribute('data-size') || 'md',
       label:  el.getAttribute('data-label') || null,
+      variant: el.getAttribute('data-variant') || 'button',
       lang:   el.getAttribute('data-lang') || 'en'
     });
 
@@ -190,7 +209,11 @@
     link.target = '_blank';
     link.rel = 'noopener noreferrer external';
     link.referrerPolicy = 'strict-origin-when-cross-origin';
-    link.className = PREFIX + '-btn ' + PREFIX + '-' + config.theme + ' ' + PREFIX + '-' + config.size;
+
+    var classes = PREFIX + '-btn ' + PREFIX + '-' + config.theme + ' ' + PREFIX + '-' + config.size;
+    if (config.variant === 'icon') classes += ' ' + PREFIX + '-icon-only';
+    if (config.variant === 'link') classes += ' ' + PREFIX + '-link-only';
+    link.className = classes;
     link.setAttribute('aria-label', config.label);
 
     el.textContent = '';

@@ -317,11 +317,11 @@
     /* ════════════════ CONFIGURATOR ════════════════ */
     .config-layout {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 24px;
     }
-    @media (max-width: 700px) {
-      .config-layout { grid-template-columns: 1fr; }
+    @media (min-width: 700px) {
+      .config-layout { grid-template-columns: 300px 1fr; gap: 32px; }
     }
     .config-form {
       display: flex;
@@ -560,19 +560,51 @@
   <section id="demo">
     <div class="container">
       <div class="section-label">01 / Demo</div>
-      <h2>Three themes, ready to go</h2>
-      <div class="demo-grid">
+      <h2>Every style you need</h2>
+      <p style="color: var(--gray-400); font-size: 14px; margin-bottom: 24px;">Three themes &times; three sizes &times; three variants. Mix and match.</p>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 32px;">
         <div class="demo-card">
-          <div class="demo-card-label">Light</div>
-          <div data-share2chatgpt data-theme="light" data-size="md" data-url="https://share2chatgpt.franzai.com/" data-title="share2chatgpt — Share to ChatGPT button for any website"></div>
+          <div class="demo-card-label">Light / Button</div>
+          <div data-share2chatgpt data-theme="light" data-variant="button" data-url="https://share2chatgpt.franzai.com/"></div>
         </div>
         <div class="demo-card demo-card-dark">
-          <div class="demo-card-label">Dark</div>
-          <div data-share2chatgpt data-theme="dark" data-size="md" data-url="https://share2chatgpt.franzai.com/" data-title="share2chatgpt — Share to ChatGPT button for any website"></div>
+          <div class="demo-card-label">Dark / Button</div>
+          <div data-share2chatgpt data-theme="dark" data-variant="button" data-url="https://share2chatgpt.franzai.com/"></div>
         </div>
         <div class="demo-card">
-          <div class="demo-card-label">Minimal</div>
-          <div data-share2chatgpt data-theme="minimal" data-size="md" data-url="https://share2chatgpt.franzai.com/" data-title="share2chatgpt — Share to ChatGPT button for any website"></div>
+          <div class="demo-card-label">Minimal / Button</div>
+          <div data-share2chatgpt data-theme="minimal" data-variant="button" data-url="https://share2chatgpt.franzai.com/"></div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 32px;">
+        <div class="demo-card">
+          <div class="demo-card-label">Light / Icon only</div>
+          <div data-share2chatgpt data-theme="light" data-variant="icon" data-url="https://share2chatgpt.franzai.com/"></div>
+        </div>
+        <div class="demo-card demo-card-dark">
+          <div class="demo-card-label">Dark / Icon only</div>
+          <div data-share2chatgpt data-theme="dark" data-variant="icon" data-url="https://share2chatgpt.franzai.com/"></div>
+        </div>
+        <div class="demo-card">
+          <div class="demo-card-label">Minimal / Icon only</div>
+          <div data-share2chatgpt data-theme="minimal" data-variant="icon" data-url="https://share2chatgpt.franzai.com/"></div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+        <div class="demo-card">
+          <div class="demo-card-label">Light / Text link</div>
+          <div data-share2chatgpt data-theme="light" data-variant="link" data-url="https://share2chatgpt.franzai.com/"></div>
+        </div>
+        <div class="demo-card demo-card-dark">
+          <div class="demo-card-label">Dark / Text link</div>
+          <div data-share2chatgpt data-theme="dark" data-variant="link" data-url="https://share2chatgpt.franzai.com/"></div>
+        </div>
+        <div class="demo-card">
+          <div class="demo-card-label">Minimal / Text link</div>
+          <div data-share2chatgpt data-theme="minimal" data-variant="link" data-url="https://share2chatgpt.franzai.com/"></div>
         </div>
       </div>
     </div>
@@ -638,6 +670,14 @@
             <label for="cfg-label">Button Label <span style="color:var(--gray-600);text-transform:none;letter-spacing:0;font-weight:400">&mdash; auto-translates per language</span></label>
             <input type="text" id="cfg-label" placeholder="Default: Discuss with ChatGPT">
           </div>
+          <fieldset class="field fieldset">
+            <legend>Variant</legend>
+            <div class="radio-group" data-field="variant" role="radiogroup" aria-label="Variant">
+              <button type="button" class="radio-pill active" data-value="button">Button</button>
+              <button type="button" class="radio-pill" data-value="icon">Icon only</button>
+              <button type="button" class="radio-pill" data-value="link">Text link</button>
+            </div>
+          </fieldset>
           <fieldset class="field fieldset">
             <legend>Theme</legend>
             <div class="radio-group" data-field="theme" role="radiogroup" aria-label="Theme">
@@ -814,6 +854,7 @@ window.open(url, <span class="val">'_blank'</span>, <span class="val">'noopener,
 
     var theme = 'light';
     var size = 'md';
+    var variant = 'button';
 
     function escapeAttr(s) {
       return String(s)
@@ -922,7 +963,8 @@ window.open(url, <span class="val">'_blank'</span>, <span class="val">'noopener,
         hints: fields.hints.value,
         temp: fields.temp.value,
         theme: theme,
-        size: size
+        size: size,
+        variant: variant
       };
     }
 
@@ -944,6 +986,7 @@ window.open(url, <span class="val">'_blank'</span>, <span class="val">'noopener,
       if (c.label) previewSlot.setAttribute('data-label', c.label); else previewSlot.removeAttribute('data-label');
       previewSlot.setAttribute('data-theme', c.theme);
       previewSlot.setAttribute('data-size', c.size);
+      if (c.variant !== 'button') previewSlot.setAttribute('data-variant', c.variant); else previewSlot.removeAttribute('data-variant');
       previewSlot.setAttribute('data-lang', c.lang);
       if (c.hints) previewSlot.setAttribute('data-hints', c.hints); else previewSlot.removeAttribute('data-hints');
       if (c.temp) previewSlot.setAttribute('data-temporary-chat', c.temp); else previewSlot.removeAttribute('data-temporary-chat');
@@ -959,6 +1002,7 @@ window.open(url, <span class="val">'_blank'</span>, <span class="val">'noopener,
       if (c.text)   attrs.push('data-text="' + escapeAttr(c.text) + '"');
       if (c.prompt) attrs.push('data-prompt="' + escapeAttr(c.prompt) + '"');
       if (c.label)  attrs.push('data-label="' + escapeAttr(c.label) + '"');
+      if (c.variant !== 'button') attrs.push('data-variant="' + c.variant + '"');
       if (c.theme !== 'light') attrs.push('data-theme="' + c.theme + '"');
       if (c.size !== 'md')     attrs.push('data-size="' + c.size + '"');
       if (c.lang !== 'en')     attrs.push('data-lang="' + c.lang + '"');
@@ -985,12 +1029,14 @@ window.open(url, <span class="val">'_blank'</span>, <span class="val">'noopener,
     /* Radio pill groups */
     document.querySelectorAll('.radio-group').forEach(function(group) {
       var fieldName = group.getAttribute('data-field');
-      setPillState(group, fieldName === 'theme' ? theme : size);
+      var currentVal = fieldName === 'theme' ? theme : fieldName === 'size' ? size : variant;
+      setPillState(group, currentVal);
 
       group.querySelectorAll('.radio-pill').forEach(function(pill) {
         pill.addEventListener('click', function() {
           if (fieldName === 'theme') theme = pill.getAttribute('data-value');
           if (fieldName === 'size') size = pill.getAttribute('data-value');
+          if (fieldName === 'variant') variant = pill.getAttribute('data-value');
           setPillState(group, pill.getAttribute('data-value'));
           update();
         });
