@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>share2chatgpt — Add a "Share to ChatGPT" button to any website</title>
+  <meta name="description" content="Embeddable Share to ChatGPT button widget. Zero dependencies. Under 3KB. One script tag.">
+  <meta property="og:title" content="share2chatgpt">
+  <meta property="og:description" content="Add a Share to ChatGPT button to any website. Zero dependencies. One script tag.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://franzenzenhofer.github.io/share2chatgpt/">
+  <link rel="canonical" href="https://franzenzenhofer.github.io/share2chatgpt/">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #10a37f;
+      --green-dim: rgba(16, 163, 127, 0.08);
+      --green-glow: rgba(16, 163, 127, 0.25);
+      --dark: #0d0d0d;
+      --dark-card: #141414;
+      --dark-border: #2a2a2a;
+      --gray-100: #f4f4f5;
+      --gray-200: #e4e4e7;
+      --gray-400: #a1a1aa;
+      --gray-500: #71717a;
+      --gray-600: #52525b;
+      --gray-800: #27272a;
+      --mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+      --sans: 'Outfit', system-ui, -apple-system, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--dark);
+      color: var(--gray-100);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--green); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ════════════════ NAV ════════════════ */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13, 13, 13, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--dark-border);
+      padding: 14px 0;
+    }
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--gray-100);
+      letter-spacing: -0.02em;
+    }
+    .nav-brand span { color: var(--green); }
+    .nav-links { display: flex; gap: 16px; font-size: 14px; }
+    .nav-links a { color: var(--gray-400); transition: color 0.15s; }
+    .nav-links a:hover { color: var(--green); text-decoration: none; }
+    @media (max-width: 480px) {
+      .nav-links { gap: 12px; font-size: 13px; }
+      .nav-links a:last-child { display: none; }
+    }
+
+    /* ════════════════ HERO ════════════════ */
+    .hero {
+      padding: 64px 0 56px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--green-glow) 0%, transparent 70%);
+      pointer-events: none;
+      opacity: 0.4;
+    }
+    .hero-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--green);
+      border: 1px solid rgba(16, 163, 127, 0.3);
+      border-radius: 100px;
+      padding: 5px 14px;
+      margin-bottom: 28px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: rgba(16, 163, 127, 0.06);
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .hero h1 span { color: var(--green); }
+    .hero-sub {
+      font-size: 1.15rem;
+      color: var(--gray-400);
+      font-weight: 300;
+      max-width: 520px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--gray-500);
+      flex-wrap: wrap;
+    }
+    @media (min-width: 600px) {
+      .hero { padding: 100px 0 80px; }
+      .hero-stats { gap: 40px; }
+    }
+    .hero-stats strong {
+      color: var(--gray-100);
+      font-weight: 700;
+    }
+
+    /* ════════════════ SECTIONS ════════════════ */
+    section { padding: 72px 0; }
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    section h2 {
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 32px;
+      line-height: 1.2;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--dark-border);
+      margin: 0;
+    }
+
+    /* ════════════════ DEMO ════════════════ */
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 600px) {
+      .demo-grid { grid-template-columns: 1fr; }
+    }
+    .demo-card {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 12px;
+      padding: 28px 20px;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+    .demo-card:hover { border-color: var(--gray-600); }
+    .demo-card-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+    .demo-card-dark { background: #0a0a0a; }
+
+    /* ════════════════ QUICKSTART ════════════════ */
+    .code-block {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid var(--dark-border);
+    }
+    .code-header span {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+    .copy-btn {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--gray-400);
+      background: transparent;
+      border: 1px solid var(--dark-border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .copy-btn:hover { color: var(--green); border-color: var(--green); }
+    .copy-btn.copied { color: var(--green); border-color: var(--green); }
+    .code-body {
+      padding: 16px;
+      overflow-x: auto;
+    }
+    .code-body pre {
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--gray-200);
+      white-space: pre;
+      margin: 0;
+    }
+    .code-body .tag { color: #7dd3fc; }
+    .code-body .attr { color: #c4b5fd; }
+    .code-body .val { color: #86efac; }
+    .code-body .cmt { color: var(--gray-600); }
+
+    /* ════════════════ CONFIGURATOR ════════════════ */
+    .config-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 700px) {
+      .config-layout { grid-template-columns: 1fr; }
+    }
+    .config-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .field label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 5px;
+    }
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--gray-100);
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 8px;
+      padding: 9px 12px;
+      transition: border-color 0.15s;
+      outline: none;
+    }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: var(--green);
+    }
+    .field textarea { resize: vertical; min-height: 56px; }
+    .field select { cursor: pointer; }
+    .field select option { background: var(--dark); }
+
+    .radio-group {
+      display: flex;
+      gap: 6px;
+    }
+    .radio-pill {
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--dark-border);
+      background: transparent;
+      color: var(--gray-400);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .radio-pill:hover { border-color: var(--gray-600); color: var(--gray-200); }
+    .radio-pill.active {
+      background: var(--green-dim);
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .config-output {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .preview-box {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 10px;
+      padding: 32px 20px;
+      text-align: center;
+      min-height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .preview-box-light {
+      background: #ffffff;
+    }
+    .output-block {
+      flex: 1;
+    }
+    .output-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* ════════════════ DOCS TABLE ════════════════ */
+    .docs-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .docs-table th {
+      text-align: left;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--dark-border);
+    }
+    .docs-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(42, 42, 42, 0.5);
+      vertical-align: top;
+    }
+    .docs-table tr:last-child td { border-bottom: none; }
+    .docs-table code {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--green);
+      background: var(--green-dim);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .docs-table .desc { color: var(--gray-400); font-size: 13px; }
+
+    /* ════════════════ FOOTER ════════════════ */
+    footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--dark-border);
+      text-align: center;
+    }
+    footer p {
+      font-size: 14px;
+      color: var(--gray-500);
+    }
+    footer .gh-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--gray-400);
+      margin-top: 12px;
+      transition: color 0.15s;
+    }
+    footer .gh-link:hover { color: var(--green); text-decoration: none; }
+    footer .gh-link svg { width: 18px; height: 18px; }
+
+    /* ════════════════ ANIMATIONS ════════════════ */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hero-badge { animation: fade-up 0.5s ease both; }
+    .hero h1 { animation: fade-up 0.5s ease 0.08s both; }
+    .hero-sub { animation: fade-up 0.5s ease 0.16s both; }
+    .hero-stats { animation: fade-up 0.5s ease 0.24s both; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container">
+      <div class="nav-brand">share2<span>chatgpt</span></div>
+      <div class="nav-links">
+        <a href="#demo">Demo</a>
+        <a href="#configure">Configure</a>
+        <a href="#docs">Docs</a>
+        <a href="https://github.com/franzenzenhofer/share2chatgpt" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge">v1.0.0 &middot; MIT License</div>
+      <h1>Share to <span>ChatGPT</span><br>in one line</h1>
+      <p class="hero-sub">
+        An embeddable button that opens ChatGPT with your page pre-loaded as a prompt.
+        Zero dependencies. Under 3KB. One script tag.
+      </p>
+      <div class="hero-stats">
+        <div><strong>0</strong> dependencies</div>
+        <div><strong>&lt;3KB</strong> gzipped</div>
+        <div><strong>1</strong> script tag</div>
+      </div>
+    </div>
+  </header>
+
+  <hr class="divider">
+
+  <!-- DEMO -->
+  <section id="demo">
+    <div class="container">
+      <div class="section-label">01 / Demo</div>
+      <h2>Three themes, ready to go</h2>
+      <div class="demo-grid">
+        <div class="demo-card">
+          <div class="demo-card-label">Light</div>
+          <div data-share2chatgpt data-theme="light" data-size="md" data-url="https://franzenzenhofer.github.io/share2chatgpt/" data-title="share2chatgpt — Share to ChatGPT button for any website"></div>
+        </div>
+        <div class="demo-card demo-card-dark">
+          <div class="demo-card-label">Dark</div>
+          <div data-share2chatgpt data-theme="dark" data-size="md" data-url="https://franzenzenhofer.github.io/share2chatgpt/" data-title="share2chatgpt — Share to ChatGPT button for any website"></div>
+        </div>
+        <div class="demo-card">
+          <div class="demo-card-label">Minimal</div>
+          <div data-share2chatgpt data-theme="minimal" data-size="md" data-url="https://franzenzenhofer.github.io/share2chatgpt/" data-title="share2chatgpt — Share to ChatGPT button for any website"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- QUICKSTART -->
+  <section id="quickstart">
+    <div class="container">
+      <div class="section-label">02 / Quickstart</div>
+      <h2>Copy, paste, done</h2>
+      <div class="code-block">
+        <div class="code-header">
+          <span>HTML</span>
+          <button class="copy-btn" data-copy="quickstart-code">Copy</button>
+        </div>
+        <div class="code-body">
+          <pre id="quickstart-code"><span class="cmt">&lt;!-- share2chatgpt widget --&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">data-share2chatgpt</span><span class="tag">&gt;&lt;/div&gt;</span>
+<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="val">"https://cdn.jsdelivr.net/gh/franzenzenhofer/share2chatgpt@latest/share2chatgpt.js"</span> <span class="attr">async</span><span class="tag">&gt;&lt;/script&gt;</span></pre>
+        </div>
+      </div>
+      <p style="color: var(--gray-500); font-size: 14px; margin-top: 16px;">
+        The button auto-detects your page URL and title. Customize with <code style="font-family: var(--mono); color: var(--green); font-size: 13px;">data-*</code> attributes.
+      </p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- CONFIGURATOR -->
+  <section id="configure">
+    <div class="container">
+      <div class="section-label">03 / Configure</div>
+      <h2>Build your button</h2>
+      <p style="color: var(--gray-400); font-size: 14px; margin-bottom: 24px; line-height: 1.6;">
+        Configure every aspect of your button below. <strong style="color:var(--gray-200)">Smart defaults</strong>:
+        leave URL and title empty and the button will automatically use the page it's placed on.
+        The prompt, label, and default text adapt to the selected language. Only set what you want to customize &mdash;
+        everything else just works.
+      </p>
+      <div class="config-layout">
+        <div class="config-form" id="configurator">
+          <div class="field">
+            <label for="cfg-url">Page URL <span style="color:var(--gray-600);text-transform:none;letter-spacing:0;font-weight:400">&mdash; leave empty to auto-detect the page the button is on</span></label>
+            <input type="url" id="cfg-url" placeholder="Auto-detects current page URL">
+          </div>
+          <div class="field">
+            <label for="cfg-title">Page Title <span style="color:var(--gray-600);text-transform:none;letter-spacing:0;font-weight:400">&mdash; leave empty to use document.title</span></label>
+            <input type="text" id="cfg-title" placeholder="Auto-detects page title">
+          </div>
+          <div class="field">
+            <label for="cfg-prompt">Custom Prompt <span style="color:var(--gray-600);text-transform:none;letter-spacing:0;font-weight:400">&mdash; use {url}, {title}, {text} as placeholders</span></label>
+            <textarea id="cfg-prompt" placeholder="Default: Read this page and summarize the key points: {url}"></textarea>
+          </div>
+          <div class="field">
+            <label for="cfg-label">Button Label <span style="color:var(--gray-600);text-transform:none;letter-spacing:0;font-weight:400">&mdash; auto-translates per language</span></label>
+            <input type="text" id="cfg-label" placeholder="Default: Discuss with ChatGPT">
+          </div>
+          <div class="field">
+            <label>Theme</label>
+            <div class="radio-group" data-field="theme">
+              <button type="button" class="radio-pill active" data-value="light">Light</button>
+              <button type="button" class="radio-pill" data-value="dark">Dark</button>
+              <button type="button" class="radio-pill" data-value="minimal">Minimal</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Size</label>
+            <div class="radio-group" data-field="size">
+              <button type="button" class="radio-pill" data-value="sm">SM</button>
+              <button type="button" class="radio-pill active" data-value="md">MD</button>
+              <button type="button" class="radio-pill" data-value="lg">LG</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="cfg-lang">Language</label>
+            <select id="cfg-lang">
+              <option value="en" selected>English</option>
+              <option value="de">Deutsch</option>
+              <option value="es">Espa&ntilde;ol</option>
+              <option value="fr">Fran&ccedil;ais</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cfg-hints">Hints <span style="color:var(--gray-600);text-transform:none;letter-spacing:0;font-weight:400">&mdash; activates ChatGPT search mode</span></label>
+            <select id="cfg-hints">
+              <option value="">None</option>
+              <option value="search">Search (web results)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cfg-temp">Temporary Chat <span style="color:var(--gray-600);text-transform:none;letter-spacing:0;font-weight:400">&mdash; no history saved</span></label>
+            <select id="cfg-temp">
+              <option value="">No (normal chat)</option>
+              <option value="true">Yes (temporary)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="config-output">
+          <div>
+            <div class="output-label">Preview</div>
+            <div class="preview-box" id="preview-container">
+              <div id="preview-slot"></div>
+            </div>
+          </div>
+          <div class="output-block">
+            <div class="output-label">
+              <span>Embed Code</span>
+              <button class="copy-btn" data-copy="embed-output">Copy</button>
+            </div>
+            <div class="code-block">
+              <div class="code-body">
+                <pre id="embed-output" style="font-size: 12px; line-height: 1.55;"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="output-block">
+            <div class="output-label">
+              <span>Redirect URL</span>
+              <button class="copy-btn" data-copy="redirect-output">Copy</button>
+            </div>
+            <div class="code-block">
+              <div class="code-body">
+                <pre id="redirect-output" style="font-size: 12px; line-height: 1.55; word-break: break-all; white-space: pre-wrap;"></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- DOCS -->
+  <section id="docs">
+    <div class="container">
+      <div class="section-label">04 / Reference</div>
+      <h2>Data attributes</h2>
+      <div style="overflow-x: auto;">
+        <table class="docs-table">
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>data-url</code></td><td class="desc">Current page</td><td class="desc">URL to discuss</td></tr>
+            <tr><td><code>data-title</code></td><td class="desc">document.title</td><td class="desc">Page title for prompt</td></tr>
+            <tr><td><code>data-text</code></td><td class="desc">empty</td><td class="desc">Custom text snippet</td></tr>
+            <tr><td><code>data-prompt</code></td><td class="desc">Per language</td><td class="desc">Prompt template. Use <code>{url}</code>, <code>{title}</code>, <code>{text}</code></td></tr>
+            <tr><td><code>data-hints</code></td><td class="desc">omitted</td><td class="desc">ChatGPT hints mode: <code>search</code> (web results)</td></tr>
+            <tr><td><code>data-temporary-chat</code></td><td class="desc">omitted</td><td class="desc">Set to <code>true</code> for a temporary chat (no history saved)</td></tr>
+            <tr><td><code>data-theme</code></td><td class="desc">light</td><td class="desc">light, dark, or minimal</td></tr>
+            <tr><td><code>data-size</code></td><td class="desc">md</td><td class="desc">sm, md, or lg</td></tr>
+            <tr><td><code>data-label</code></td><td class="desc">Per language</td><td class="desc">Custom button text</td></tr>
+            <tr><td><code>data-lang</code></td><td class="desc">en</td><td class="desc">en, de, es, fr</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 style="margin-top: 48px;">JavaScript API</h2>
+      <div class="code-block">
+        <div class="code-header"><span>JavaScript</span></div>
+        <div class="code-body">
+          <pre><span class="cmt">// Re-scan DOM after dynamic content loads</span>
+Share2ChatGPT.init();
+
+<span class="cmt">// Build a ChatGPT URL programmatically</span>
+<span class="attr">var</span> url = Share2ChatGPT.buildUrl({
+  url: <span class="val">'https://example.com'</span>,
+  title: <span class="val">'My Page'</span>,
+  lang: <span class="val">'en'</span>
+});
+window.open(url, <span class="val">'_blank'</span>);</pre>
+        </div>
+      </div>
+
+      <h2 style="margin-top: 48px;">Redirect URL</h2>
+      <p style="color: var(--gray-400); font-size: 14px; margin-bottom: 16px;">
+        No widget needed. Link directly:
+      </p>
+      <div class="code-block">
+        <div class="code-header"><span>URL</span><button class="copy-btn" data-copy="redirect-example">Copy</button></div>
+        <div class="code-body">
+          <pre id="redirect-example" style="word-break: break-all; white-space: pre-wrap;">https://franzenzenhofer.github.io/share2chatgpt/go/?url=https%3A%2F%2Ffranzenzenhofer.github.io%2Fshare2chatgpt%2F&amp;lang=en</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <p>MIT License. No tracking. No cookies. Just a button.</p>
+      <a href="https://github.com/franzenzenhofer/share2chatgpt" target="_blank" rel="noopener" class="gh-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        franzenzenhofer/share2chatgpt
+      </a>
+    </div>
+  </footer>
+
+  <!-- Load the widget -->
+  <script src="share2chatgpt.js"></script>
+
+  <!-- Configurator logic -->
+  <script>
+  (function() {
+    var fields = {
+      url: document.getElementById('cfg-url'),
+      title: document.getElementById('cfg-title'),
+      prompt: document.getElementById('cfg-prompt'),
+      label: document.getElementById('cfg-label'),
+      lang: document.getElementById('cfg-lang'),
+      hints: document.getElementById('cfg-hints'),
+      temp: document.getElementById('cfg-temp')
+    };
+    var previewSlot = document.getElementById('preview-slot');
+    var previewContainer = document.getElementById('preview-container');
+    var embedOutput = document.getElementById('embed-output');
+    var redirectOutput = document.getElementById('redirect-output');
+
+    var theme = 'light';
+    var size = 'md';
+
+    function escapeAttr(s) { return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+    function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function getConfig() {
+      return {
+        url: fields.url.value,
+        title: fields.title.value,
+        prompt: fields.prompt.value,
+        label: fields.label.value,
+        lang: fields.lang.value,
+        hints: fields.hints.value,
+        temp: fields.temp.value,
+        theme: theme,
+        size: size
+      };
+    }
+
+    function update() {
+      var c = getConfig();
+
+      /* Preview */
+      previewSlot.removeAttribute('data-s2c-init');
+      while (previewSlot.firstChild) previewSlot.removeChild(previewSlot.firstChild);
+
+      previewSlot.setAttribute('data-share2chatgpt', '');
+      if (c.url) previewSlot.setAttribute('data-url', c.url); else previewSlot.removeAttribute('data-url');
+      if (c.title) previewSlot.setAttribute('data-title', c.title); else previewSlot.removeAttribute('data-title');
+      if (c.prompt) previewSlot.setAttribute('data-prompt', c.prompt); else previewSlot.removeAttribute('data-prompt');
+      if (c.label) previewSlot.setAttribute('data-label', c.label); else previewSlot.removeAttribute('data-label');
+      previewSlot.setAttribute('data-theme', c.theme);
+      previewSlot.setAttribute('data-size', c.size);
+      previewSlot.setAttribute('data-lang', c.lang);
+      if (c.hints) previewSlot.setAttribute('data-hints', c.hints); else previewSlot.removeAttribute('data-hints');
+      if (c.temp) previewSlot.setAttribute('data-temporary-chat', c.temp); else previewSlot.removeAttribute('data-temporary-chat');
+
+      if (window.Share2ChatGPT) window.Share2ChatGPT.init();
+
+      previewContainer.className = 'preview-box' + (c.theme === 'dark' ? '' : ' preview-box-light');
+
+      /* Embed code */
+      var attrs = ['data-share2chatgpt'];
+      if (c.url)    attrs.push('data-url="' + escapeAttr(c.url) + '"');
+      if (c.title)  attrs.push('data-title="' + escapeAttr(c.title) + '"');
+      if (c.prompt) attrs.push('data-prompt="' + escapeAttr(c.prompt) + '"');
+      if (c.label)  attrs.push('data-label="' + escapeAttr(c.label) + '"');
+      if (c.theme !== 'light') attrs.push('data-theme="' + c.theme + '"');
+      if (c.size !== 'md')     attrs.push('data-size="' + c.size + '"');
+      if (c.lang !== 'en')     attrs.push('data-lang="' + c.lang + '"');
+      if (c.hints) attrs.push('data-hints="' + c.hints + '"');
+      if (c.temp) attrs.push('data-temporary-chat="' + c.temp + '"');
+
+      var indent = '\n     ';
+      var divTag = '<div ' + attrs.join(indent) + '></div>';
+      var scriptTag = '<script src="https://cdn.jsdelivr.net/gh/franzenzenhofer/share2chatgpt@latest/share2chatgpt.js" async><\/script>';
+      embedOutput.textContent = divTag + '\n' + scriptTag;
+
+      /* Redirect URL */
+      var params = new URLSearchParams();
+      params.set('url', c.url || window.location.href);
+      if (c.title)  params.set('title', c.title);
+      if (c.prompt) params.set('prompt', c.prompt);
+      if (c.lang !== 'en') params.set('lang', c.lang);
+      if (c.hints) params.set('hints', c.hints);
+      if (c.temp) params.set('temporary-chat', c.temp);
+      redirectOutput.textContent = 'https://franzenzenhofer.github.io/share2chatgpt/go/?' + params.toString();
+    }
+
+    /* Radio pill groups */
+    document.querySelectorAll('.radio-group').forEach(function(group) {
+      var fieldName = group.getAttribute('data-field');
+      group.querySelectorAll('.radio-pill').forEach(function(pill) {
+        pill.addEventListener('click', function() {
+          group.querySelectorAll('.radio-pill').forEach(function(p) { p.classList.remove('active'); });
+          pill.classList.add('active');
+          if (fieldName === 'theme') theme = pill.getAttribute('data-value');
+          if (fieldName === 'size') size = pill.getAttribute('data-value');
+          update();
+        });
+      });
+    });
+
+    /* Input listeners */
+    Object.keys(fields).forEach(function(key) {
+      fields[key].addEventListener('input', update);
+      fields[key].addEventListener('change', update);
+    });
+
+    /* Copy buttons */
+    document.querySelectorAll('[data-copy]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(btn.getAttribute('data-copy'));
+        if (!target) return;
+        navigator.clipboard.writeText(target.textContent).then(function() {
+          var orig = btn.textContent;
+          btn.textContent = 'Copied!';
+          btn.classList.add('copied');
+          setTimeout(function() { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+        });
+      });
+    });
+
+    /* Initial render */
+    update();
+  })();
+  </script>
+
+</body>
+</html>
