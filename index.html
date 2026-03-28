@@ -3,23 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; img-src 'self' data: https://share2chatgpt.franzai.com; connect-src 'self' https://static.cloudflareinsights.com; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#0d0d0d">
+  <meta name="build-version" content="__BUILD_VERSION__">
   <title>share2chatgpt — Add a "Share to ChatGPT" button to any website</title>
-  <meta name="description" content="Embeddable Share to ChatGPT button widget. Zero dependencies. Under 3KB. One script tag.">
+  <meta name="description" content="Embeddable Share to ChatGPT button widget. Zero dependencies. Lightweight. One script tag.">
   <meta property="og:title" content="share2chatgpt">
   <meta property="og:description" content="Add a Share to ChatGPT button to any website. Zero dependencies. One script tag.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://share2chatgpt.franzai.com/">
-  <meta property="og:image" content="https://share2chatgpt.franzai.com/og-image.png">
+  <meta property="og:image" content="https://share2chatgpt.franzai.com/og-image.png?v=__BUILD_VERSION__">
   <meta property="og:image:width" content="2400">
   <meta property="og:image:height" content="1260">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="share2chatgpt — Share to ChatGPT button for any website">
-  <meta name="twitter:description" content="Embeddable Share to ChatGPT button widget. Zero dependencies. Under 3KB. One script tag.">
-  <meta name="twitter:image" content="https://share2chatgpt.franzai.com/og-image.png">
+  <meta name="twitter:description" content="Embeddable Share to ChatGPT button widget. Zero dependencies. Lightweight. One script tag.">
+  <meta name="twitter:image" content="https://share2chatgpt.franzai.com/og-image.png?v=__BUILD_VERSION__">
   <link rel="canonical" href="https://share2chatgpt.franzai.com/">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%230d0d0d'/%3E%3Cpath d='M18 46V18h11.4c7 0 11.3 3.8 11.3 9.5 0 3.9-1.9 6.6-5.2 8l7.8 10.5H36l-6.4-9.1h-4.8V46H18zm6.8-14.4h4.2c3.4 0 5.4-1.4 5.4-4s-2-4.1-5.4-4.1h-4.2v8.1z' fill='%2310a37f'/%3E%3Cpath d='M44.5 18h6.8v28h-6.8z' fill='%23f4f4f5'/%3E%3C/svg%3E">
+  <script>
+    (function() {
+      var buildVersion = '__BUILD_VERSION__';
+      var url = new URL(window.location.href);
 
+      if (url.searchParams.get('v') !== buildVersion) {
+        url.searchParams.set('v', buildVersion);
+        window.location.replace(url.toString());
+        return;
+      }
+
+      window.__S2C_BUILD_VERSION__ = buildVersion;
+      document.documentElement.setAttribute('data-build-version', buildVersion);
+    })();
+  </script>
+  <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -35,15 +53,17 @@
       --gray-500: #71717a;
       --gray-600: #52525b;
       --gray-800: #27272a;
-      --mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
-      --sans: 'Outfit', system-ui, -apple-system, sans-serif;
+      --mono: ui-monospace, 'SF Mono', 'SFMono-Regular', 'Cascadia Mono', 'Segoe UI Mono', 'Roboto Mono', monospace;
+      --sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
       font-family: var(--sans);
-      background: var(--dark);
+      background:
+        radial-gradient(circle at top, rgba(16, 163, 127, 0.16), transparent 32%),
+        linear-gradient(180deg, #050807 0%, #0d0d0d 28%, #0d0d0d 100%);
       color: var(--gray-100);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
@@ -56,6 +76,18 @@
       max-width: 760px;
       margin: 0 auto;
       padding: 0 24px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     /* ════════════════ NAV ════════════════ */
@@ -120,7 +152,8 @@
       margin-bottom: 28px;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      background: rgba(16, 163, 127, 0.06);
+      background: rgba(16, 163, 127, 0.08);
+      box-shadow: 0 10px 25px rgba(16, 163, 127, 0.08);
     }
     .hero h1 {
       font-size: clamp(2.4rem, 6vw, 3.8rem);
@@ -191,18 +224,23 @@
       .demo-grid { grid-template-columns: 1fr; }
     }
     .demo-card {
-      background: var(--dark-card);
-      border: 1px solid var(--dark-border);
-      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(20,20,20,0.95), rgba(20,20,20,0.75));
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
       padding: 28px 20px;
       text-align: center;
-      transition: border-color 0.2s;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
     }
-    .demo-card:hover { border-color: var(--gray-600); }
+    .demo-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(16, 163, 127, 0.3);
+      box-shadow: 0 22px 44px rgba(0, 0, 0, 0.24);
+    }
     .demo-card-label {
       font-family: var(--mono);
       font-size: 11px;
-      color: var(--gray-500);
+      color: var(--gray-400);
       text-transform: uppercase;
       letter-spacing: 0.08em;
       margin-bottom: 16px;
@@ -211,11 +249,12 @@
 
     /* ════════════════ QUICKSTART ════════════════ */
     .code-block {
-      background: var(--dark-card);
-      border: 1px solid var(--dark-border);
-      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(20,20,20,0.95), rgba(15,15,15,0.88));
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
       overflow: hidden;
       position: relative;
+      box-shadow: 0 22px 48px rgba(0, 0, 0, 0.18);
     }
     .code-header {
       display: flex;
@@ -233,16 +272,31 @@
     .copy-btn {
       font-family: var(--mono);
       font-size: 11px;
-      color: var(--gray-400);
-      background: transparent;
-      border: 1px solid var(--dark-border);
-      border-radius: 6px;
-      padding: 4px 10px;
+      color: var(--gray-200);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px;
+      padding: 7px 12px;
       cursor: pointer;
-      transition: all 0.15s;
+      transition: transform 0.15s ease, border-color 0.15s ease, color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
     }
-    .copy-btn:hover { color: var(--green); border-color: var(--green); }
-    .copy-btn.copied { color: var(--green); border-color: var(--green); }
+    .copy-btn:hover {
+      color: #fff;
+      border-color: rgba(16, 163, 127, 0.55);
+      background: rgba(16, 163, 127, 0.16);
+      box-shadow: 0 10px 22px rgba(16, 163, 127, 0.16);
+      transform: translateY(-1px);
+    }
+    .copy-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(16, 163, 127, 0.18);
+    }
+    .copy-btn.copied {
+      color: #03251d;
+      background: linear-gradient(180deg, #54ddb8, #18b18a);
+      border-color: transparent;
+      box-shadow: 0 12px 28px rgba(16, 163, 127, 0.24);
+    }
     .code-body {
       padding: 16px;
       overflow-x: auto;
@@ -283,6 +337,19 @@
       letter-spacing: 0.06em;
       margin-bottom: 5px;
     }
+    .fieldset {
+      border: none;
+      padding: 0;
+      min-width: 0;
+    }
+    .fieldset legend {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 5px;
+    }
     .field input,
     .field textarea,
     .field select {
@@ -290,42 +357,66 @@
       font-family: var(--mono);
       font-size: 13px;
       color: var(--gray-100);
-      background: var(--dark-card);
-      border: 1px solid var(--dark-border);
-      border-radius: 8px;
+      background: rgba(20, 20, 20, 0.92);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
       padding: 9px 12px;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
       outline: none;
     }
     .field input:focus,
     .field textarea:focus,
     .field select:focus {
-      border-color: var(--green);
+      border-color: rgba(16, 163, 127, 0.8);
+      box-shadow: 0 0 0 3px rgba(16, 163, 127, 0.12);
+      background: rgba(18, 18, 18, 0.98);
     }
     .field textarea { resize: vertical; min-height: 56px; }
     .field select { cursor: pointer; }
     .field select option { background: var(--dark); }
+    .field-feedback {
+      margin-top: 6px;
+      min-height: 18px;
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+    .field-feedback.error { color: #fca5a5; }
+    .field.invalid input {
+      border-color: rgba(248, 113, 113, 0.7);
+      box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.1);
+    }
 
     .radio-group {
       display: flex;
       gap: 6px;
+      flex-wrap: wrap;
     }
     .radio-pill {
       font-family: var(--mono);
       font-size: 12px;
-      padding: 6px 14px;
-      border-radius: 6px;
-      border: 1px solid var(--dark-border);
-      background: transparent;
-      color: var(--gray-400);
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.02);
+      color: var(--gray-200);
       cursor: pointer;
-      transition: all 0.15s;
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
     }
-    .radio-pill:hover { border-color: var(--gray-600); color: var(--gray-200); }
+    .radio-pill:hover {
+      border-color: rgba(16, 163, 127, 0.45);
+      color: #fff;
+      background: rgba(16, 163, 127, 0.12);
+      transform: translateY(-1px);
+    }
+    .radio-pill:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(16, 163, 127, 0.12);
+    }
     .radio-pill.active {
-      background: var(--green-dim);
-      border-color: var(--green);
-      color: var(--green);
+      background: linear-gradient(180deg, rgba(84, 221, 184, 0.24), rgba(16, 163, 127, 0.18));
+      border-color: rgba(84, 221, 184, 0.5);
+      color: #dcfff5;
+      box-shadow: 0 14px 24px rgba(16, 163, 127, 0.16);
     }
 
     .config-output {
@@ -334,18 +425,19 @@
       gap: 16px;
     }
     .preview-box {
-      background: var(--dark-card);
-      border: 1px solid var(--dark-border);
-      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(20,20,20,0.96), rgba(15,15,15,0.82));
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
       padding: 32px 20px;
       text-align: center;
       min-height: 90px;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 20px 46px rgba(0, 0, 0, 0.18);
     }
     .preview-box-light {
-      background: #ffffff;
+      background: linear-gradient(180deg, #ffffff, #f5f8f7);
     }
     .output-block {
       flex: 1;
@@ -429,6 +521,7 @@
   </style>
 </head>
 <body>
+  <div class="sr-only" id="copy-feedback" aria-live="polite"></div>
 
   <!-- NAV -->
   <nav>
@@ -443,18 +536,19 @@
     </div>
   </nav>
 
+  <main id="main-content">
   <!-- HERO -->
   <header class="hero">
     <div class="container">
-      <div class="hero-badge">v1.0.0 &middot; MIT License</div>
+      <div class="hero-badge">Widget v1.1.0 &middot; Build __BUILD_LABEL__</div>
       <h1>Share to <span>ChatGPT</span><br>in one line</h1>
       <p class="hero-sub">
         An embeddable button that opens ChatGPT with your page pre-loaded as a prompt.
-        Zero dependencies. Under 3KB. One script tag.
+        Zero dependencies. Lightweight. One script tag.
       </p>
       <div class="hero-stats">
         <div><strong>0</strong> dependencies</div>
-        <div><strong>&lt;3KB</strong> gzipped</div>
+        <div><strong>Pure</strong> JS</div>
         <div><strong>1</strong> script tag</div>
       </div>
     </div>
@@ -499,7 +593,7 @@
         <div class="code-body">
           <pre id="quickstart-code"><span class="cmt">&lt;!-- share2chatgpt widget --&gt;</span>
 <span class="tag">&lt;div</span> <span class="attr">data-share2chatgpt</span><span class="tag">&gt;&lt;/div&gt;</span>
-<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="val">"https://cdn.jsdelivr.net/gh/franzenzenhofer/share2chatgpt@latest/share2chatgpt.js"</span> <span class="attr">async</span><span class="tag">&gt;&lt;/script&gt;</span></pre>
+<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="val">"https://share2chatgpt.franzai.com/share2chatgpt.js"</span> <span class="attr">async</span><span class="tag">&gt;&lt;/script&gt;</span></pre>
         </div>
       </div>
       <p style="color: var(--gray-500); font-size: 14px; margin-top: 16px;">
@@ -523,13 +617,18 @@
       </p>
       <div class="config-layout">
         <div class="config-form" id="configurator">
-          <div class="field">
+          <div class="field" id="cfg-url-field">
             <label for="cfg-url">Page URL <span style="color:var(--gray-600);text-transform:none;letter-spacing:0;font-weight:400">&mdash; leave empty to auto-detect the page the button is on</span></label>
-            <input type="url" id="cfg-url" placeholder="Auto-detects current page URL">
+            <input type="url" id="cfg-url" placeholder="Auto-detects current page URL" inputmode="url" aria-describedby="cfg-url-feedback">
+            <p class="field-feedback" id="cfg-url-feedback">Only absolute <code>https://</code> or <code>http://</code> URLs are accepted when you override the default.</p>
           </div>
           <div class="field">
             <label for="cfg-title">Page Title <span style="color:var(--gray-600);text-transform:none;letter-spacing:0;font-weight:400">&mdash; leave empty to use document.title</span></label>
             <input type="text" id="cfg-title" placeholder="Auto-detects page title">
+          </div>
+          <div class="field">
+            <label for="cfg-text">Custom Text Snippet <span style="color:var(--gray-600);text-transform:none;letter-spacing:0;font-weight:400">&mdash; included when your prompt uses {text}</span></label>
+            <textarea id="cfg-text" placeholder="Optional context to inject into the prompt"></textarea>
           </div>
           <div class="field">
             <label for="cfg-prompt">Custom Prompt <span style="color:var(--gray-600);text-transform:none;letter-spacing:0;font-weight:400">&mdash; use {url}, {title}, {text} as placeholders</span></label>
@@ -539,22 +638,22 @@
             <label for="cfg-label">Button Label <span style="color:var(--gray-600);text-transform:none;letter-spacing:0;font-weight:400">&mdash; auto-translates per language</span></label>
             <input type="text" id="cfg-label" placeholder="Default: Discuss with ChatGPT">
           </div>
-          <div class="field">
-            <label>Theme</label>
-            <div class="radio-group" data-field="theme">
+          <fieldset class="field fieldset">
+            <legend>Theme</legend>
+            <div class="radio-group" data-field="theme" role="radiogroup" aria-label="Theme">
               <button type="button" class="radio-pill active" data-value="light">Light</button>
               <button type="button" class="radio-pill" data-value="dark">Dark</button>
               <button type="button" class="radio-pill" data-value="minimal">Minimal</button>
             </div>
-          </div>
-          <div class="field">
-            <label>Size</label>
-            <div class="radio-group" data-field="size">
+          </fieldset>
+          <fieldset class="field fieldset">
+            <legend>Size</legend>
+            <div class="radio-group" data-field="size" role="radiogroup" aria-label="Size">
               <button type="button" class="radio-pill" data-value="sm">SM</button>
               <button type="button" class="radio-pill active" data-value="md">MD</button>
               <button type="button" class="radio-pill" data-value="lg">LG</button>
             </div>
-          </div>
+          </fieldset>
           <div class="field">
             <label for="cfg-lang">Language</label>
             <select id="cfg-lang">
@@ -658,7 +757,7 @@ Share2ChatGPT.init();
   title: <span class="val">'My Page'</span>,
   lang: <span class="val">'en'</span>
 });
-window.open(url, <span class="val">'_blank'</span>);</pre>
+window.open(url, <span class="val">'_blank'</span>, <span class="val">'noopener,noreferrer'</span>);</pre>
         </div>
       </div>
 
@@ -674,6 +773,7 @@ window.open(url, <span class="val">'_blank'</span>);</pre>
       </div>
     </div>
   </section>
+  </main>
 
   <!-- FOOTER -->
   <footer>
@@ -687,20 +787,26 @@ window.open(url, <span class="val">'_blank'</span>);</pre>
   </footer>
 
   <!-- Load the widget -->
-  <script src="share2chatgpt.js"></script>
+  <script src="share2chatgpt.js?v=__BUILD_VERSION__"></script>
 
   <!-- Configurator logic -->
   <script>
   (function() {
+    var SITE_URL = 'https://share2chatgpt.franzai.com';
+    var WIDGET_SCRIPT_URL = SITE_URL + '/share2chatgpt.js';
     var fields = {
       url: document.getElementById('cfg-url'),
       title: document.getElementById('cfg-title'),
+      text: document.getElementById('cfg-text'),
       prompt: document.getElementById('cfg-prompt'),
       label: document.getElementById('cfg-label'),
       lang: document.getElementById('cfg-lang'),
       hints: document.getElementById('cfg-hints'),
       temp: document.getElementById('cfg-temp')
     };
+    var urlField = document.getElementById('cfg-url-field');
+    var urlFeedback = document.getElementById('cfg-url-feedback');
+    var copyFeedback = document.getElementById('copy-feedback');
     var previewSlot = document.getElementById('preview-slot');
     var previewContainer = document.getElementById('preview-container');
     var embedOutput = document.getElementById('embed-output');
@@ -709,15 +815,109 @@ window.open(url, <span class="val">'_blank'</span>);</pre>
     var theme = 'light';
     var size = 'md';
 
-    function escapeAttr(s) { return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
-    function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function escapeAttr(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;');
+    }
+
+    function getCanonicalUrl() {
+      var canonical = document.querySelector('link[rel="canonical"]');
+      return canonical ? canonical.href : window.location.origin + window.location.pathname;
+    }
+
+    function isHttpUrl(value) {
+      try {
+        var parsed = new URL(value);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function normalizeCustomUrl(value) {
+      if (!value) return '';
+      return window.Share2ChatGPT && window.Share2ChatGPT.normalizeUrl
+        ? window.Share2ChatGPT.normalizeUrl(value, '')
+        : value;
+    }
+
+    function updateUrlFeedback(rawValue) {
+      var isValid = !rawValue || isHttpUrl(rawValue);
+      urlField.classList.toggle('invalid', !isValid);
+      fields.url.setAttribute('aria-invalid', isValid ? 'false' : 'true');
+      urlFeedback.className = 'field-feedback' + (isValid ? '' : ' error');
+      urlFeedback.innerHTML = isValid
+        ? 'Only absolute <code>https://</code> or <code>http://</code> URLs are accepted when you override the default.'
+        : 'Enter a full <code>https://</code> or <code>http://</code> URL. Non-web protocols are blocked.';
+      return isValid;
+    }
+
+    function setPillState(group, selectedValue) {
+      group.querySelectorAll('.radio-pill').forEach(function(pill) {
+        var isActive = pill.getAttribute('data-value') === selectedValue;
+        pill.classList.toggle('active', isActive);
+        pill.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+    }
+
+    function announceCopy(message) {
+      copyFeedback.textContent = '';
+      window.setTimeout(function() {
+        copyFeedback.textContent = message;
+      }, 0);
+    }
+
+    function copyPlainText(value) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(value);
+      }
+
+      return new Promise(function(resolve, reject) {
+        var textarea = document.createElement('textarea');
+        textarea.value = value;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        textarea.style.pointerEvents = 'none';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+
+        try {
+          var copied = document.execCommand('copy');
+          document.body.removeChild(textarea);
+          if (!copied) throw new Error('copy failed');
+          resolve();
+        } catch (error) {
+          document.body.removeChild(textarea);
+          reject(error);
+        }
+      });
+    }
+
+    function flashCopyState(btn, text, copied) {
+      if (!btn.hasAttribute('data-default-label')) {
+        btn.setAttribute('data-default-label', btn.textContent);
+      }
+
+      window.clearTimeout(btn._copyTimer);
+      btn.textContent = text;
+      btn.classList.toggle('copied', !!copied);
+      btn._copyTimer = window.setTimeout(function() {
+        btn.textContent = btn.getAttribute('data-default-label');
+        btn.classList.remove('copied');
+      }, 1600);
+    }
 
     function getConfig() {
       return {
-        url: fields.url.value,
-        title: fields.title.value,
-        prompt: fields.prompt.value,
-        label: fields.label.value,
+        url: fields.url.value.trim(),
+        title: fields.title.value.trim(),
+        text: fields.text.value.trim(),
+        prompt: fields.prompt.value.trim(),
+        label: fields.label.value.trim(),
         lang: fields.lang.value,
         hints: fields.hints.value,
         temp: fields.temp.value,
@@ -728,14 +928,18 @@ window.open(url, <span class="val">'_blank'</span>);</pre>
 
     function update() {
       var c = getConfig();
+      var hasValidCustomUrl = updateUrlFeedback(c.url);
+      var safeUrl = hasValidCustomUrl ? normalizeCustomUrl(c.url) : '';
+      var previewUrl = safeUrl || getCanonicalUrl();
 
       /* Preview */
       previewSlot.removeAttribute('data-s2c-init');
       while (previewSlot.firstChild) previewSlot.removeChild(previewSlot.firstChild);
 
       previewSlot.setAttribute('data-share2chatgpt', '');
-      if (c.url) previewSlot.setAttribute('data-url', c.url); else previewSlot.removeAttribute('data-url');
+      if (previewUrl) previewSlot.setAttribute('data-url', previewUrl); else previewSlot.removeAttribute('data-url');
       if (c.title) previewSlot.setAttribute('data-title', c.title); else previewSlot.removeAttribute('data-title');
+      if (c.text) previewSlot.setAttribute('data-text', c.text); else previewSlot.removeAttribute('data-text');
       if (c.prompt) previewSlot.setAttribute('data-prompt', c.prompt); else previewSlot.removeAttribute('data-prompt');
       if (c.label) previewSlot.setAttribute('data-label', c.label); else previewSlot.removeAttribute('data-label');
       previewSlot.setAttribute('data-theme', c.theme);
@@ -750,8 +954,9 @@ window.open(url, <span class="val">'_blank'</span>);</pre>
 
       /* Embed code */
       var attrs = ['data-share2chatgpt'];
-      if (c.url)    attrs.push('data-url="' + escapeAttr(c.url) + '"');
+      if (safeUrl)  attrs.push('data-url="' + escapeAttr(safeUrl) + '"');
       if (c.title)  attrs.push('data-title="' + escapeAttr(c.title) + '"');
+      if (c.text)   attrs.push('data-text="' + escapeAttr(c.text) + '"');
       if (c.prompt) attrs.push('data-prompt="' + escapeAttr(c.prompt) + '"');
       if (c.label)  attrs.push('data-label="' + escapeAttr(c.label) + '"');
       if (c.theme !== 'light') attrs.push('data-theme="' + c.theme + '"');
@@ -762,29 +967,31 @@ window.open(url, <span class="val">'_blank'</span>);</pre>
 
       var indent = '\n     ';
       var divTag = '<div ' + attrs.join(indent) + '></div>';
-      var scriptTag = '<script src="https://cdn.jsdelivr.net/gh/franzenzenhofer/share2chatgpt@latest/share2chatgpt.js" async><\/script>';
+      var scriptTag = '<script src="' + WIDGET_SCRIPT_URL + '" async><\/script>';
       embedOutput.textContent = divTag + '\n' + scriptTag;
 
       /* Redirect URL */
       var params = new URLSearchParams();
-      params.set('url', c.url || window.location.href);
+      params.set('url', safeUrl || getCanonicalUrl());
       if (c.title)  params.set('title', c.title);
+      if (c.text)   params.set('text', c.text);
       if (c.prompt) params.set('prompt', c.prompt);
       if (c.lang !== 'en') params.set('lang', c.lang);
       if (c.hints) params.set('hints', c.hints);
       if (c.temp) params.set('temporary-chat', c.temp);
-      redirectOutput.textContent = 'https://share2chatgpt.franzai.com/go/?' + params.toString();
+      redirectOutput.textContent = SITE_URL + '/go/?' + params.toString();
     }
 
     /* Radio pill groups */
     document.querySelectorAll('.radio-group').forEach(function(group) {
       var fieldName = group.getAttribute('data-field');
+      setPillState(group, fieldName === 'theme' ? theme : size);
+
       group.querySelectorAll('.radio-pill').forEach(function(pill) {
         pill.addEventListener('click', function() {
-          group.querySelectorAll('.radio-pill').forEach(function(p) { p.classList.remove('active'); });
-          pill.classList.add('active');
           if (fieldName === 'theme') theme = pill.getAttribute('data-value');
           if (fieldName === 'size') size = pill.getAttribute('data-value');
+          setPillState(group, pill.getAttribute('data-value'));
           update();
         });
       });
@@ -801,12 +1008,15 @@ window.open(url, <span class="val">'_blank'</span>);</pre>
       btn.addEventListener('click', function() {
         var target = document.getElementById(btn.getAttribute('data-copy'));
         if (!target) return;
-        navigator.clipboard.writeText(target.textContent).then(function() {
-          var orig = btn.textContent;
-          btn.textContent = 'Copied!';
-          btn.classList.add('copied');
-          setTimeout(function() { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
-        });
+        copyPlainText(target.textContent)
+          .then(function() {
+            flashCopyState(btn, 'Copied!', true);
+            announceCopy('Copied to clipboard.');
+          })
+          .catch(function() {
+            flashCopyState(btn, 'Press Cmd+C', false);
+            announceCopy('Clipboard access failed.');
+          });
       });
     });
 

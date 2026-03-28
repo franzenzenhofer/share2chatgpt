@@ -1,12 +1,12 @@
 # share2chatgpt
 
-Add a "Share to ChatGPT" button to any website. Zero dependencies. Under 3KB. One script tag.
+Add a "Share to ChatGPT" button to any website. Zero dependencies. Lightweight. One script tag.
 
 ## Quick Start
 
 ```html
 <div data-share2chatgpt></div>
-<script src="https://cdn.jsdelivr.net/gh/franzenzenhofer/share2chatgpt@latest/share2chatgpt.js" async></script>
+<script src="https://share2chatgpt.franzai.com/share2chatgpt.js" async></script>
 ```
 
 The button auto-detects your page URL and title.
@@ -33,13 +33,14 @@ Everything is configurable via `data-*` attributes:
 ```html
 <div data-share2chatgpt
      data-url="https://share2chatgpt.franzai.com/"
+     data-text="Optional extra context to include"
      data-prompt="Summarize and list 3 key takeaways: {url}"
      data-theme="dark"
      data-size="lg"
      data-hints="search"
      data-temporary-chat="true"
      data-label="Ask ChatGPT"></div>
-<script src="https://cdn.jsdelivr.net/gh/franzenzenhofer/share2chatgpt@latest/share2chatgpt.js" async></script>
+<script src="https://share2chatgpt.franzai.com/share2chatgpt.js" async></script>
 ```
 
 ## Redirect URL (no widget needed)
@@ -64,6 +65,8 @@ window.open(url, '_blank');
 ## How It Works
 
 The widget constructs a `chatgpt.com/?q=<prompt>` URL using ChatGPT's `?q=` parameter to prefill prompts. It also supports `?hints=search` (web search mode) and `?temporary-chat=true` (no history saved).
+
+Only absolute `http://` and `https://` URLs are accepted when you explicitly override `data-url` or use the redirect helper.
 
 ## No tracking. No cookies. No dependencies.
 

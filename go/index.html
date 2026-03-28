@@ -3,16 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; img-src 'self' data: https://share2chatgpt.franzai.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#0d0d0d">
   <meta name="robots" content="noindex, nofollow">
   <title>Redirecting to ChatGPT...</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%230d0d0d'/%3E%3Cpath d='M18 46V18h11.4c7 0 11.3 3.8 11.3 9.5 0 3.9-1.9 6.6-5.2 8l7.8 10.5H36l-6.4-9.1h-4.8V46H18zm6.8-14.4h4.2c3.4 0 5.4-1.4 5.4-4s-2-4.1-5.4-4.1h-4.2v8.1z' fill='%2310a37f'/%3E%3Cpath d='M44.5 18h6.8v28h-6.8z' fill='%23f4f4f5'/%3E%3C/svg%3E">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; }
     body {
       font-family: system-ui, -apple-system, sans-serif;
       display: flex; align-items: center; justify-content: center;
-      min-height: 100vh; background: #0d0d0d; color: #a1a1aa;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, rgba(16, 163, 127, 0.18), transparent 34%),
+        linear-gradient(180deg, #06100d, #0d0d0d 45%);
+      color: #c4c4cc;
     }
-    .wrap { text-align: center; padding: 24px; }
+    .wrap {
+      text-align: center;
+      padding: 28px 24px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      background: rgba(15, 15, 15, 0.82);
+      box-shadow: 0 28px 54px rgba(0, 0, 0, 0.28);
+      max-width: 420px;
+    }
     .spinner {
       width: 28px; height: 28px; border: 2.5px solid #2a2a2a;
       border-top-color: #10a37f; border-radius: 50%;
@@ -20,8 +36,14 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     p { font-size: 15px; }
-    .error { color: #ef4444; display: none; margin-top: 12px; }
+    .error { color: #fca5a5; display: none; margin-top: 12px; }
     a { color: #10a37f; }
+    code {
+      font-family: ui-monospace, 'SF Mono', 'SFMono-Regular', 'Cascadia Mono', monospace;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      padding: 2px 6px;
+    }
   </style>
 </head>
 <body>
@@ -29,21 +51,16 @@
     <div class="spinner" id="spinner"></div>
     <p>Redirecting to ChatGPT...</p>
     <p class="error" id="error">
-      Missing <code>url</code> parameter.<br>
+      Missing or invalid <code>url</code> parameter.<br>
       <a href="/">Back to share2chatgpt</a>
     </p>
   </div>
+  <script src="../share2chatgpt.js?v=__BUILD_VERSION__"></script>
   <script>
   (function() {
-    var PROMPTS = {
-      en: 'Read this page and summarize the key points as bullet points: {url}',
-      de: 'Lies diese Seite und fasse die wichtigsten Punkte als Aufzaehlung zusammen: {url}',
-      es: 'Lee esta pagina y resume los puntos clave en viñetas: {url}',
-      fr: 'Lis cette page et resume les points cles sous forme de liste: {url}'
-    };
-
     var params = new URLSearchParams(window.location.search);
-    var url = params.get('url');
+    var api = window.Share2ChatGPT;
+    var url = api && api.normalizeUrl ? api.normalizeUrl(params.get('url'), '') : '';
 
     if (!url) {
       document.getElementById('error').style.display = 'block';
@@ -51,22 +68,17 @@
       return;
     }
 
-    var lang = params.get('lang') || 'en';
-    var title = params.get('title') || '';
-    var text = params.get('text') || '';
-    var template = params.get('prompt') || PROMPTS[lang] || PROMPTS.en;
+    var target = api.buildUrl({
+      url: url,
+      title: params.get('title') || '',
+      text: params.get('text') || '',
+      prompt: params.get('prompt') || '',
+      lang: params.get('lang') || 'en',
+      hints: params.get('hints') || '',
+      temporaryChat: params.get('temporary-chat') || ''
+    });
 
-    var prompt = template
-      .replace(/\{url\}/g, url)
-      .replace(/\{title\}/g, title)
-      .replace(/\{text\}/g, text);
-
-    var target = new URLSearchParams();
-    target.set('q', prompt);
-    if (params.get('hints')) target.set('hints', params.get('hints'));
-    if (params.get('temporary-chat')) target.set('temporary-chat', params.get('temporary-chat'));
-
-    window.location.replace('https://chatgpt.com/?' + target.toString());
+    window.location.replace(target);
   })();
   </script>
 </body>
